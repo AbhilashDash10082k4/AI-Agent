@@ -1,0 +1,32 @@
+{
+  "name": "ai_agent",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "generate": "drizzle-kit generate",
+    "migrate": "drizzle-kit migrate",
+    "studio": "drizzle-kit studio"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^22.13.1",
+    "@types/pg": "^8.11.11",
+    "drizzle-kit": "^0.30.4",
+    "tsx": "^4.19.2"
+  },
+  "dependencies": {
+    "@langchain/core": "^0.3.37",
+    "@langchain/ollama": "^0.1.5",
+    "ai_agent": "file:",
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.39.1",
+    "ollama": "^0.5.12",
+    "openai": "^4.83.0",
+    "pg": "^8.13.1",
+    "readline-sync": "^1.4.10"
+  }
+}

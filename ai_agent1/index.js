@@ -25,7 +25,7 @@ Example
 START
 {"type": "user", "user": "What is the temperature in BBSR?"}
 {"type": "plan", "plan": "I will call getWeatherDetails function for the BBSR as asked by user in query"}
-{"type": "observation", "observation": "the temperature of the city as asked by user in query in °C which is 10°C"}
+{"type": "observation", "observation": "the temperature of the city as asked by user in query in °C which is 10°C which is mentioned in getWeatherDetails function"}
 {"type": "output", "output": "weather of the city asked by the user in query in °C which in this case is 10°C"}
 `;
 // {"type": "plan", "plan": "I will call getWeatherDetails function for the city asked by the user in query which in this case is BBSR."}
