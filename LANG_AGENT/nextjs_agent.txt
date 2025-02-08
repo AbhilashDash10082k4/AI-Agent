@@ -1,0 +1,38 @@
+use cases-
+1.give info from the db
+2.yt transcript
+3. search through Google Books
+4. retrieve comments from comments api
+
+Learnings-
+limitaions of Lang Graph Adapter frmo Langchain
+building server sent archietecture - building custom tools on LangChain -> any backend integrating with any frontend???, interesting!
+
+Tech Stack - CLerk, Nextjs15, watsonx.ai flows engine(integrating tools to LLMs like Claude and OpenAI) and streaming it to frontend, convex, prebuilt tools from  IBM
+
+Nextjs15 (frontend) -> Convex(backend)
+
+user enter prompt -> submit -> 
+hitting own API => call to LLM => encapsulating LLM in LangChain and giving tools to them(user defined fns) =>   LLM will call tools based on user 
+input => response streaming (in chunks) =>
+
+the final response and user i/p both are stored in Convex for caching
+caching is imp for reducing token usage, this is called as prompt caching -> this stores context for LLMs to respond in an efficient way
+
+nextjs app router -> API routes to send HTTP reqs which will stream msgs back n forth b/w BE and FE
+
+Server Send Events - streaming layer b/w backend and frontend
+
+LangChain - framework to interact with LLMs
+IBMs WX flow tool - turns any endpoint to a tool and attaches it with Langchain along with LLM to make an Agentic AI
+
+tools - it enables LLMs to take data from outside of their data adn implement actions
+
+
+
+
+
+
+TO LEARN -
+1. LangChian and LangGraph
+2. Convex

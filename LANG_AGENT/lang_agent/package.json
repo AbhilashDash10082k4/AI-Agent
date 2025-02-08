@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "convex": "^1.19.0",
     "lang_agent": "file:",
     "next": "15.1.6",
     "react": "^19.0.0",
