@@ -1,10 +1,7 @@
-"use client"
-import React from 'react'
-
-export default function DashboardPage() {
+function DashboarPage() {
   return (
-    <div className='min-h-100 flex items-center justify-center'>
-      Dashboard
+    <div>
     </div>
   )
 }
+export default DashboarPage
