@@ -1,4 +1,5 @@
 "use client"
+//client component -> showing the components to client
 import { ClerkProvider, useAuth} from "@clerk/nextjs";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { ConvexReactClient } from "convex/react"

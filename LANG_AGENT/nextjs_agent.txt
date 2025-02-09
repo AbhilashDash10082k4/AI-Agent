@@ -26,13 +26,21 @@ Server Send Events - streaming layer b/w backend and frontend
 LangChain - framework to interact with LLMs
 IBMs WX flow tool - turns any endpoint to a tool and attaches it with Langchain along with LLM to make an Agentic AI
 
-tools - it enables LLMs to take data from outside of their data adn implement actions
+tools - it enables LLMs to take data from outside of their data and implement actions
+
+connecting clerk & convex
+npx convex dev automatically syncs changes with BE
 
 
+Flow- 
+after clicking on SignUp (which is in SignedOut component) it will change the landing page with the button with Get Started on it which on Click will redirect to dashboard
 
-
-
+in DashboardLayout- Authenticate from convex/react - ensure the children inside this component are accessible only when the user is authenticated
 
 TO LEARN -
 1. LangChian and LangGraph
 2. Convex
+3. Nextjs docs
+
+3. Build a transpiler that changes onyx2migo(web3 + AI) (onyx (way to rep ML models)) code to MLGO(in Golang)
+4. Ruby on rails
