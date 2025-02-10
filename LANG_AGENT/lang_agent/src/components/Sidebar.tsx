@@ -6,11 +6,16 @@ import { use } from "react";
 import { Button } from "./ui/button";
 import { PlusIcon } from "@radix-ui/react-icons"
 import { cn } from "@/lib/utils";
+import { useMutation } from "convex/react";
+import { api } from "../../convex/_generated/api";
 
 export default function Sidebar() {
     const router = useRouter();
+
     //destructuringt the vals from NavigationContext object
     const {isMobileNavOpen, closeMobileNav} = use(NavigationContext);
+
+    const createChat = useMutation(api.chat.createChat);
 
     //this fn will close the mobilenav and will redirect the user to dashboard 
     function handleClick () {
@@ -18,6 +23,14 @@ export default function Sidebar() {
         closeMobileNav();
     }
     
+    //function that handles creation of new chat
+    async function handleNewChat() {
+        const chatId = await createChat({title: "New Chat"})
+        //redirecting the user to new chat just created and cli=osing mobileNav
+        router.push(`/dashboard/chat/${chatId}`);
+        closeMobileNav();
+    }
+
     return (
         <>
             {/* overlaying */}
@@ -32,7 +45,7 @@ export default function Sidebar() {
             )}>
                 <div className="p-4 border-b border-gray-200/50">
                 <Button 
-                // onClick={handleNewChat} 
+                onClick={handleNewChat}
                 className="w-full bg-white hover:bg-gray-50 text-gray-700 border border-gray-200/50 shadow-sm hover:shadow transition-all duration-200">
                 <PlusIcon className="mr-2 h-4 w-4"/> New Chat
                 </Button>
