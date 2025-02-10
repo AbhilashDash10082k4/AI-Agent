@@ -41,6 +41,7 @@ TO LEARN -
 1. LangChian and LangGraph
 2. Convex
 3. Nextjs docs
+4.React hooks (ContextAPI, Reux, Zustand)
 
 3. Build a transpiler that changes onyx2migo(web3 + AI) (onyx (way to rep ML models)) code to MLGO(in Golang)
 4. Ruby on rails
