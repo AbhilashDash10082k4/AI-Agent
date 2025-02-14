@@ -10,8 +10,13 @@ interface NavigationContextType {
     setIsMobileNavOpen: (open: boolean) => void;
     closeMobileNav: () => void;
 }
-//<> -> generics
-export const NavigationContext = createContext<NavigationContextType | undefined>(undefined);
+
+// <> -> Enums
+export const NavigationContext = createContext<NavigationContextType>({
+    isMobileNavOpen: false,
+    setIsMobileNavOpen: () => {},
+    closeMobileNav: () => {}
+});
 
 export default function NavigationContextProvider({children,}:{children: React.ReactNode}) {
     

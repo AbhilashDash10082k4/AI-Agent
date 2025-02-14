@@ -18,7 +18,7 @@ export default function Sidebar() {
     const {isMobileNavOpen, closeMobileNav} = use(NavigationContext);
 
     //listing all the chats in the DB
-    //in all these, "CHAT" can c reate errors
+    //in all these, "CHAT" can create errors
     const chats = useQuery(api.chat.listChats);
     const createChat = useMutation(api.chat.createChat);
     const deleteChat = useMutation(api.chat.deleteChat);

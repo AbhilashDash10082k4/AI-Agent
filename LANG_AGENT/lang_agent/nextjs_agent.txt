@@ -37,6 +37,11 @@ after clicking on SignUp (which is in SignedOut component) it will change the la
 
 in DashboardLayout- Authenticate from convex/react - ensure the children inside this component are accessible only when the user is authenticated
 
+
+creating new chats and storing them n convex DB
+
+
+
 TO LEARN -
 1. LangChian and LangGraph
 2. Convex
