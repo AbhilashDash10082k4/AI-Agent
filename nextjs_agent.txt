@@ -1,0 +1,74 @@
+use cases-
+1.give info from the db
+2.yt transcript
+3. search through Google Books
+4. retrieve comments from comments api
+
+Learnings-
+limitaions of Lang Graph Adapter from Langchain
+building server sent archietecture - building custom tools on LangChain -> any backend integrating with any frontend???, interesting!
+
+Tech Stack - CLerk, Nextjs15, watsonx.ai flows engine(integrating tools to LLMs like Claude and OpenAI) and streaming it to frontend, convex, prebuilt tools from  IBM
+Nextjs15 (frontend) -> Convex(backend)
+
+user enter prompt -> submit -> 
+hitting own API => call to LLM => encapsulating LLM in LangChain and giving tools to them(user defined fns) =>   LLM will call tools based on user 
+input => response streaming (in chunks) =>
+
+the final response and user i/p both are stored in Convex for caching
+caching is imp for reducing token usage, this is called as prompt caching -> this stores context for LLMs to respond in an efficient way
+
+nextjs app router -> API routes to send HTTP reqs which will stream msgs back n forth b/w BE and FE
+
+Server Send Events - streaming layer b/w backend and frontend
+
+LangChain - framework to interact with LLMs
+IBMs WX flow tool - turns any endpoint to a tool and attaches it with Langchain along with LLM to make an Agentic AI
+
+tools - it enables LLMs to take data from outside of their data and implement actions
+
+connecting clerk & convex
+npx convex dev automatically syncs changes with BE
+
+
+Flow- 
+after clicking on SignUp (which is in SignedOut component) it will change the landing page with the button with Get Started on it which on Click will redirect to dashboard
+
+in DashboardLayout- Authenticate from convex/react - ensure the children inside this component are accessible only when the user is authenticated
+
+we send i/p in chunks(streams) form UI to API of file router sys of Nextjs and in the BE, the i/p will be processed and will send a buch of chunks for response to be displayed as fullResponse, the rchieteccture is basically server sent events
+with every chunk , the BE sends a "partial" msg
+
+
+Learnings-
+1. Streams API-
+    i- process streams recieved over a network using JS as reqd by the dev
+    ii- breaking data into chunks and processing it bit by bit, prevents generating a buffer and makes process faster
+    iii- reading into data of stream using ReadableStream, data read by reader created with ReadableStream.getReader(). ReadableStream is an obj that reps a data source somewhere on the network that gives data.
+        types -
+        a. push sources - constantly push sources when needed. Can be paused or cancelled. E.g video streaing, WS
+        b. pull sources - request data from these sources when connected to. E.g file access
+    Chunks - small bytes of data/response. These are queued to be viewed. Internal queueing manages the unread chunks
+    chunks are read by reader which are processed. The processor and the reader are called customers. Readers have a constructor called controller that conrols stream
+
+    A reader is locked onto a stream and needs to be removed to lock on another user
+    iv- TransformStream - a stream that modifies data as it flows through a pipeline. Source between a readable and writable stream. Takes stream of res from an upstream source, processes it and the transformed data is then passed to downstream. Encrypts/decrypts data before storing
+
+
+TO LEARN -
+1. LangChain and LangGraph and LangSmith
+2. Convex
+3. Nextjs docs
+4. React hooks (ContextAPI, Reux, Zustand)
+5. SSE(server sent events)
+6. useTransition , useRef hooks
+7. scrolling to the bottom (const msgEndRef = useRef<HTMLDivElement>(null);)
+8. const stream = new TransformStream({} , {highWaterMark: 1024});
+//writer allows the browser to send msgs through stream
+    const writer = stream.writable.getWriter();
+9. enums, generics , interfaces, types
+10, 
+
+From podcast-
+1. Build a transpiler that changes onyx2migo(web3 + AI) (onyx (way to rep ML models)) code to MLGO(in Golang)
+2. Ruby on rails

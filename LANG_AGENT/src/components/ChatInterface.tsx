@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
@@ -6,6 +7,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Doc, Id } from "../../convex/_generated/dataModel";
 import { Button } from "./ui/button";
 import { ArrowRight } from "lucide-react";
+import { ChatReqBody } from "@/lib/types";
 
 interface ChatInterfaceProps {
   chatId: Id<"chats">;
@@ -24,11 +26,11 @@ const ChatInterface = ({ chatId, initialMessages }: ChatInterfaceProps) => {
 
   //scrolling to bottom of the page every time the i/p is displayed'
   const msgEndRef = useRef<HTMLDivElement>(null);
-
   //if a msg ever changes or the response is streamed, scroll to the bottom
-  useEffect (() => {
-    msgEndRef.current?.scrollIntoView({behavior: "smooth"})
-  },[messages, streamedResponse])
+  
+  useEffect(() => {
+    msgEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, streamedResponse]);
 
   //e = object from form submission, e.preventDefault - prevents default submission of the form that refreshes the page,
   async function handleSubmit(e: React.FormEvent) {
@@ -62,20 +64,11 @@ const ChatInterface = ({ chatId, initialMessages }: ChatInterfaceProps) => {
     setMessages((prev) => [...prev, optimisticUserMsg]);
 
     //tracking complete res to save it to DB
-    
+
     //the full res-
     const fullRes = "";
+
     //streaming -
-    type MessageRole = "user" | "assistant"; 
-    interface Message {
-      role: MessageRole,
-      content: string,
-    }
-    interface ChatReqBody {
-      messages: Message[],
-      newMsg: string,
-      chatId: Id<"chats">,
-    }
     try {
       //the reqBody which will contain the i/p which will be sent to backend for res streaming, chatId=contains address to every chat, ID of chat tables
       const reqBody: ChatReqBody = {
@@ -86,15 +79,28 @@ const ChatInterface = ({ chatId, initialMessages }: ChatInterfaceProps) => {
         newMsg: trimmedInput,
         chatId,
       };
-
-      //calling SSE connection
+      //calling SSE connection - Sending req form BE to client, "api/chat/stream will be created using file sysytem route in nextjs"
       const response = await fetch("api/chat/stream", {
         method: "POST",
-        headers: {"Content-type": "application/json"},
+        headers: { "Content-type": "application/json" },
         body: JSON.stringify(reqBody),
-      })
-    } catch (error) {
+      });
 
+      if (!response.ok) throw new Error(await response.text());
+      if (!response.body) throw new Error("NO response body was found");
+
+      //----streaming the res from BE----
+    } catch (error) {
+      console.error("Error in sending msg to BE", error);
+
+      //removing the optimistic user msg
+      setMessages((prev) =>
+        prev.filter((msg) => msg._id !== optimisticUserMsg._id)
+      );
+
+      setStreamedResponse("error");
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -103,16 +109,18 @@ const ChatInterface = ({ chatId, initialMessages }: ChatInterfaceProps) => {
     <main className="flex flex-col h-[calc(100vh-theme(spacing.14))]">
       {/*Messages */}
       <section className="flex-1">
-      {/**response streaming */}
-      <div> 
-        {/*messages , below div will show our i/p msg*/}
-        {messages.map((msg) => (
-          <div key={msg._id} className="">{msg.content}</div>
-        ))}
+        {/**response streaming */}
+        <div>
+          {/*messages , below div will show our i/p msg, msg._id comes from optimistic UI*/}
+          {messages.map((msg) => (
+            <div key={msg._id} className="">
+              {msg.content}
+            </div>
+          ))}
 
-        {/**last messages - always at the end of the screen*/}
-        <div ref={msgEndRef}></div>
-      </div>
+          {/**last messages - always at the end of the screen*/}
+          <div ref={msgEndRef}></div>
+        </div>
       </section>
 
       {/**input , mx-auto- centering(margin-left:0, margin-right:0, works if th eelme has defined width) ,relative - */}

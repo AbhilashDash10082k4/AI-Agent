@@ -60,11 +60,13 @@ export const listChats = query({
         if (!identity) {
             throw new Error("Not authenticated");
         }
+
+        //querying chats
         const chats = await ctx.db
             .query("chats")
             .withIndex("by_user", (q) => q.eq("userId", identity.subject))
             .order("desc")
             .collect();
         return chats;
-    }
+    },
 })
