@@ -70,7 +70,10 @@ TO LEARN -
 10. Wx flows SDK, everything about WX Flows, WX Flows x LangChain etc. @wxflows/sdk
 11. wxflows import curl <data source url from dummyjson.com> and wxflows import tool, deploying tools to IBM so that LLM can pull the tools from server
 12. FlowsEngine workflow (IBM Watsonx.ai), (createWorkflow, StateGraph -> search in docs)
-13. 
+13. ChatPromptTemplate, cache_control, trimMessages
+14. langchain adapter
+25. rules for caching - from docs of prompt caching
+
 
 From podcast-
 1. Build a transpiler that changes onyx2migo(web3 + AI) (onyx (way to rep ML models)) code to MLGO(in Golang)

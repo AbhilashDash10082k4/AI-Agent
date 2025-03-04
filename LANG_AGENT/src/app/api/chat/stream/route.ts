@@ -11,6 +11,8 @@ import {
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { api } from "../../../../../convex/_generated/api";
+import { AIMessage, HumanMessage, ToolMessage } from "@langchain/core/messages";
+import { submitQuestion } from "@/lib/langgraph";
 
 //helper function to be able to write into that stream and send stream from frontend
 function sendSSEMsgs(
@@ -59,19 +61,98 @@ export default async function POST(req: Request) {
         await sendSSEMsgs(writer, { type: StreamMsgType.Connected });
 
         //send the user msg to convex DB
-        await convex.mutation(api.messages.send,{
-            chatId,
-            content: newMsg,
+        await convex.mutation(api.messages.send, {
+          chatId,
+          content: newMsg,
         });
 
+        //In db, the format of msgs changes, so changing the format to LangChain format
+        const langChainMessages = [
+          ...messages.map((msg) =>
+            msg.role === "user" //create HumanMessage or AIMessage instant
+              ? new HumanMessage(msg.content)
+              : new AIMessage(msg.content)
+          ),
+          new HumanMessage(newMsg) //last msg is appended to the HumanMessage
+        ]
+        try {
+          //create the stream ->  langChainMsgs and chatId are passed to langgraph, this will have event flowing through it -> events flowing through langchain and getting streamed 
+          const eventStream = await submitQuestion(langChainMessages, chatId);
+
+          //processing each of the events
+          for await (const event of eventStream) {
+            console.log("event: ", event);
+
+            /*on_chat_model_stream ->  LLM streams a chunk to user
+            on_tool_start - when LLM starts to use a tool
+            on_tool_end - when LLM stops to use a tool
+            */
+            if (event.event === "on_chat_model_stream") {
+
+              //a token is taken to be a chunk
+              const token = event.data.chunk;
+              if (token) {
+
+                //access the text property from AIMessage chunk - beneficial for SSE events and for langchain equipped with tools
+                const text = token.content.at(0)?.("text");
+
+                //sending the SSE msgs
+                if (text) {
+                  await sendSSEMsgs(writer, {
+                    type: StreamMsgType.Token,
+                    token: text,
+                  });
+                }
+              }
+
+            } else if (event.event === "on_tool_start") {
+              await sendSSEMsgs(writer, {
+                type: StreamMsgType.ToolStart,
+                tool: event.name || "unknown",
+                input: event.data.input,
+              });
+            } else if (event.event === "on_tool_end") {
+              //on completion of tool calling, extract the msg given by the tool
+              const toolMessage = new ToolMessage(event.data.output);
+              await sendSSEMsgs(writer, {
+                type: StreamMsgType.ToolEnd,
+                tool: toolMessage.lc_kwargs.name || "unknown",
+                output: event.data.output,
+              });
+            }
+
+            //sending completion msg
+            await sendSSEMsgs(writer, { type: StreamMsgType.Done });
+          }
+
+        } catch (streamError) {
+          //error in event stream
+          console.error("Error in event stream", streamError);
+          await sendSSEMsgs(writer, {
+            type: StreamMsgType.Error,
+            error:
+              streamError instanceof Error
+                ? streamError.message
+                : "Stream processing failed"
+          })
+        }
+
       } catch (error) {
-        console.log("Error in chat API", error);
-        return NextResponse.json(
-          { error: "Failed to process chat request" },
-          { status: 500 }
-        );
-      }
-    };
+        //overall error
+        console.error("Error in chat API", error);
+        await sendSSEMsgs(writer, {
+          type: StreamMsgType.Error,
+          error: error instanceof Error ? error.message : "Unknown Error",
+        })
+      } finally {
+        try {
+          await writer.close()
+        } catch (closeError) {
+          console.log("Error in closing writer", closeError);
+        };
+
+      };
+    }
     startStream();
 
     return response;
