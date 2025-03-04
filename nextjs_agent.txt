@@ -67,7 +67,10 @@ TO LEARN -
 //writer allows the browser to send msgs through stream
     const writer = stream.writable.getWriter();
 9. enums, generics , interfaces, types
-10, 
+10. Wx flows SDK, everything about WX Flows, WX Flows x LangChain etc. @wxflows/sdk
+11. wxflows import curl <data source url from dummyjson.com> and wxflows import tool, deploying tools to IBM so that LLM can pull the tools from server
+12. FlowsEngine workflow (IBM Watsonx.ai), (createWorkflow, StateGraph -> search in docs)
+13. 
 
 From podcast-
 1. Build a transpiler that changes onyx2migo(web3 + AI) (onyx (way to rep ML models)) code to MLGO(in Golang)
